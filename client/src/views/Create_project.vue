@@ -261,6 +261,7 @@
 <script>
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
+import { useAuthStore } from "../stores/auth"; // Import store từ Pinia
 
 export default {
   components: {
@@ -272,7 +273,7 @@ export default {
         ownerName: "",
         ownerEmail: "",
         ownerPhone: "",
-        walletAddress: "",
+        walletAddress: "", // Ban đầu để trống
         startupProject: "",
         fundCat: "",
         detailsProject: "",
@@ -288,10 +289,17 @@ export default {
         marketingPlan: "",
         commitment: false,
         termsAccepted: false,
-        images: [], // Khởi tạo mảng rỗng cho ảnh
+        images: [],
       },
       message: "",
     };
+  },
+  mounted() {
+    // Lấy địa chỉ ví từ store Pinia và gán vào walletAddress
+    const authStore = useAuthStore();
+    if (authStore.walletAddress) {
+      this.project.walletAddress = authStore.walletAddress;
+    }
   },
   methods: {
     async submitProject() {
@@ -304,36 +312,7 @@ export default {
         this.message = "Dự án đã được tạo thành công!";
       } catch (error) {
         console.error("Lỗi khi gửi dự án:", error);
-        console.error(
-          "Chi tiết lỗi:",
-          error.response ? error.response.data : error.message
-        );
         this.message = "Có lỗi xảy ra, vui lòng thử lại!";
-      }
-    },
-
-    handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        console.log("Uploaded file:", file);
-      } else {
-        console.warn("Không có file nào được tải lên!");
-      }
-    },
-
-    handleImageUpload(event) {
-      const files = event.target.files;
-      if (files.length > 0) {
-        this.project.images = []; // Xóa các ảnh cũ nếu có
-        Array.from(files).forEach((file) => {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            this.project.images.push(e.target.result); // Đưa ảnh vào mảng images
-          };
-          reader.readAsDataURL(file); // Đọc file ảnh dưới dạng URL
-        });
-      } else {
-        console.warn("Không có ảnh nào được chọn!");
       }
     },
   },
