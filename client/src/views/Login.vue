@@ -7,11 +7,6 @@
       <div class="divider">OR</div>
 
       <PrivyLogin />
-
-      <p class="download-text">
-        Download <a href="#" class="download-link">Best Wallet</a> and create an
-        account
-      </p>
     </div>
   </div>
 </template>
