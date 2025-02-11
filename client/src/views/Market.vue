@@ -7,45 +7,59 @@
         <li><a href="#" @click="showCategory('electronics')">All</a></li>
         <li><a href="#" @click="showCategory('fashion')">Truyền Thống</a></li>
         <li><a href="#" @click="showCategory('home')">Hiện đại</a></li>
-        <li><a href="#" @click="showCategory('fashion')">Truyền Thống</a></li>
-        <li><a href="#" @click="showCategory('home')">Hiện đại</a></li>
       </ul>
       <select class="sort-select">
         <option class="option_sort-select" value="top">Top</option>
-        <option class="option_sort-select" value="trending">Trending</option>
         <option class="option_sort-select" value="trending">Trending</option>
       </select>
     </nav>
 
     <!-- content -->
     <div class="main_render-details-blog">
-      <div class="card">
+      <!-- Hiển thị danh sách các dự án -->
+      <div v-for="(projectItem, index) in projects" :key="index" class="card">
         <div class="card-images">
           <img
-            id="mainImage"
-            :src="mainImage"
+            :src="projectItem.mainImage"
             alt="Main Image"
             class="main-img"
+            v-if="projectItem.mainImage"
           />
           <div class="small-images">
             <img
-              v-for="(image, index) in smallImages"
-              :key="index"
+              v-for="(image, i) in projectItem.smallImages"
+              :key="i"
               :src="image"
               alt="Small Image"
-              @click="changeImage(image)"
+              @click="changeImage(image, projectItem)"
             />
           </div>
         </div>
         <div class="card-content">
-          <!-- Kiểm tra trước khi hiển thị ownerName -->
           <span class="author">
             <span class="author_id">By</span>
-            {{ project.ownerName || "N/A" }}
+            {{ projectItem.ownerName || "N/A" }}
           </span>
           <div class="info">
-            <h3 class="card-title">{{ project.productType }}</h3>
-            <p class="card-price">Số tiền: ${{ project.estimatedPrice }}</p>
+            <h3 class="card-title">{{ projectItem.productType }}</h3>
+            <p class="card-price">Số tiền: ${{ projectItem.estimatedPrice }}</p>
+            <p>
+              <strong>Startup Project:</strong> {{ projectItem.startupProject }}
+            </p>
+            <p><strong>Funding Goal:</strong> ${{ projectItem.fundingGoal }}</p>
+            <p>
+              <strong>Start Date:</strong>
+              {{ new Date(projectItem.startDate).toLocaleDateString() }}
+            </p>
+            <p>
+              <strong>End Date:</strong>
+              {{ new Date(projectItem.endDate).toLocaleDateString() }}
+            </p>
+            <p>
+              <strong>Profit Share Rate:</strong>
+              {{ projectItem.profitShareRate || "N/A" }}%
+            </p>
+            <p><strong>Details:</strong> {{ projectItem.detailsProject }}</p>
           </div>
         </div>
       </div>
@@ -56,28 +70,20 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import Navbar from "../components/Navbar.vue";
-import { useAuthStore } from "../stores/auth";
 
-// Dùng store Pinia để lấy walletAddress
-const authStore = useAuthStore();
-const walletAddress = ref(authStore.walletAddress); // Lấy walletAddress từ store
-
-// Các biến để lưu trữ dữ liệu dự án
-const project = ref({});
-const mainImage = ref("");
-const smallImages = ref([]);
+// Các biến để lưu trữ dữ liệu các dự án
+const projects = ref([]);
 
 // Hàm để thay đổi ảnh chính khi click vào ảnh nhỏ
-const changeImage = (image) => {
-  mainImage.value = image;
+const changeImage = (image, projectItem) => {
+  // Cập nhật ảnh chính của dự án
+  projectItem.mainImage = image;
 };
 
-// Hàm để tải dự án từ server dựa trên walletAddress
-const loadProject = async (walletAddress) => {
+// Hàm để tải tất cả các dự án từ server
+const loadProjects = async () => {
   try {
-    const response = await fetch(
-      `http://localhost:5000/projects/${walletAddress}`
-    );
+    const response = await fetch(`http://localhost:5000/projects`); // Kiểm tra URL chính xác
 
     // Kiểm tra mã trạng thái của phản hồi
     if (!response.ok) {
@@ -87,23 +93,24 @@ const loadProject = async (walletAddress) => {
     const data = await response.json();
 
     // Kiểm tra xem dữ liệu có đúng cấu trúc không
-    if (data && data.ownerName && data.images) {
-      project.value = data;
-      mainImage.value = data.images[0]; // Lấy ảnh đầu tiên làm ảnh chính
-      smallImages.value = data.images.slice(1); // Các ảnh còn lại là ảnh nhỏ
+    if (Array.isArray(data)) {
+      projects.value = data.map((project) => ({
+        ...project,
+        mainImage:
+          project.images && project.images.length > 0 ? project.images[0] : "", // Lấy ảnh đầu tiên làm ảnh chính nếu có
+        smallImages: project.images ? project.images.slice(1) : [], // Các ảnh còn lại là ảnh nhỏ nếu có
+      }));
     } else {
       throw new Error("Dữ liệu không hợp lệ");
     }
   } catch (error) {
-    console.error("Error loading project:", error);
+    console.error("Error loading projects:", error);
   }
 };
 
-// Gọi loadProject khi trang được mount
+// Gọi loadProjects khi trang được mount
 onMounted(() => {
-  if (walletAddress.value) {
-    loadProject(walletAddress.value); // Gọi hàm với walletAddress
-  }
+  loadProjects(); // Gọi hàm để tải tất cả dự án
 });
 </script>
 
