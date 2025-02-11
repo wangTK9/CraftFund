@@ -1,52 +1,28 @@
 const User = require("../models/User");
 
-exports.updateUser = async (req, res) => {
+const registerUser = async (req, res) => {
   try {
-    const {
-      walletAddress,
-      fullname,
-      email,
-      investmentInterests,
-      investmentAmount,
-      role,
-    } = req.body;
+    const { walletAddress } = req.body;
 
-    console.log("Received data:", req.body); // 🐛 Debug dữ liệu gửi lên
-
-    // Kiểm tra dữ liệu đầu vào
     if (!walletAddress) {
-      return res.status(400).json({ error: "Wallet address is required" });
+      return res.status(400).json({ message: "Wallet address is required" });
     }
 
-    // Tìm user theo walletAddress
-    let user = await User.findOne({ walletAddress: walletAddress });
+    let user = await User.findOne({ walletAddress });
 
     if (!user) {
-      // Nếu không tìm thấy user, tạo mới
-      user = new User({
-        walletAddress: walletAddress,
-        fullname,
-        email,
-        investmentInterests,
-        investmentAmount,
-        role,
-      });
-    } else {
-      // Nếu tìm thấy user, cập nhật thông tin
-      user.fullname = fullname;
-      user.email = email;
-      user.investmentInterests = investmentInterests;
-      user.investmentAmount = investmentAmount;
-      user.role = role;
+      user = new User({ walletAddress });
+      await user.save();
+      return res
+        .status(201)
+        .json({ message: "User registered successfully", user });
     }
 
-    // Lưu vào database
-    await user.save();
-    console.log("Updated user:", user); // 🐛 Debug dữ liệu đã cập nhật
-
-    res.json({ message: "User updated successfully", user });
+    return res.status(200).json({ message: "User already registered", user });
   } catch (error) {
-    console.error("Server error:", error); // 🐛 In lỗi chi tiết
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error registering user:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
+module.exports = { registerUser };

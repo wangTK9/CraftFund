@@ -76,7 +76,7 @@ export default defineComponent({
 
         // Gửi địa chỉ ví lên backend
         const response = await fetch(
-          "http://localhost:5000/api/users/register",
+          "http://localhost:5000/api/user/register",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

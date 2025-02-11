@@ -34,6 +34,7 @@ mongoose
   .catch((err) => console.error("❌ MongoDB Error:", err));
 
 // API Routes
+app.use("/api/user", userRoutes);
 app.use("/api/projects", projectRoutes);
 
 const PORT = process.env.PORT || 5000;
