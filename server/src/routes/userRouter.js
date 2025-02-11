@@ -1,9 +1,8 @@
 const express = require("express");
-const { updateUser } = require("../controllers/userController");
+const { registerUser } = require("../controllers/userController");
 
 const router = express.Router();
 
-// API cập nhật user
-router.put("/user/update", updateUser);
+router.post("/register", registerUser);
 
 module.exports = router;
