@@ -29,7 +29,6 @@
             "
             alt="Main Image"
             class="main-img"
-            v-if="projectItem.mainImage"
           />
           <div class="small-images">
             <img
