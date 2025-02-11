@@ -119,62 +119,31 @@
         </fieldset>
 
         <!-- Mục tiêu kêu gọi vốn -->
-        <fieldset class="section">
+        <fieldset>
           <legend>Mục tiêu kêu gọi vốn</legend>
           <input
-            v-model="project.fundingGoal"
-            id="fundingGoal"
+            v-model.number="project.fundingGoal"
             type="number"
             placeholder="Số tiền cần huy động (USD)"
             required
-            class="input"
           />
-          <div class="date-inputs">
-            <label for="startDate">Ngày Bắt Đầu:</label>
-            <input
-              v-model="project.startDate"
-              id="startDate"
-              type="date"
-              required
-              class="input-date"
-            />
-
-            <label for="endDate">Ngày Kết Thúc:</label>
-            <input
-              v-model="project.endDate"
-              id="endDate"
-              type="date"
-              required
-              class="input-date"
-            />
-
-            <label for="productionDeadline"
-              >Mốc Thời Gian Sản Xuất & Hoàn Thành:</label
-            >
-            <input
-              v-model="project.productionDeadline"
-              id="productionDeadline"
-              type="date"
-              placeholder="Chọn mốc thời gian"
-              required
-              class="input-date"
-            />
-          </div>
-
+          <input v-model="project.startDate" type="date" required />
+          <input v-model="project.endDate" type="date" required />
           <input
-            v-model.number="project.profitShareRate"
-            id="profitShareRate"
+            v-model="project.productionDeadline"
+            type="date"
+            placeholder="Mốc thời gian sản xuất & hoàn thành"
+            required
+          />
+          <input
+            v-model.number="project.returnRate"
             type="number"
             placeholder="Lợi nhuận cam kết (%) (nếu có)"
             step="0.1"
-            required
-            class="input-date"
           />
           <textarea
             v-model="project.fundUsage"
-            id="fundUsage"
             placeholder="Cơ chế sử dụng vốn (nếu có)"
-            class="textarea"
           ></textarea>
         </fieldset>
 
