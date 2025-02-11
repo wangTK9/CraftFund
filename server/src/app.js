@@ -2,7 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const bodyParser = require("body-parser");  // Import body-parser
 const projectRoutes = require("./routes/projectRoutes");
+
+// Tùy chọn 1: Tắt strictQuery (mặc định trong tương lai)
+mongoose.set('strictQuery', false);
 
 dotenv.config();
 const app = express();
@@ -15,7 +19,10 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions)); // Sử dụng cấu hình CORS này trong Express
-app.use(express.json());
+
+// Thêm cấu hình body-parser để tăng giới hạn dung lượng
+app.use(bodyParser.json({ limit: '10mb' }));  // Tăng giới hạn lên 10MB
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));  // Tăng giới hạn cho form data
 
 // Kết nối MongoDB Atlas
 mongoose
