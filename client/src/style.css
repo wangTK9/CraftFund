@@ -71,4 +71,26 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  @font-face {
+    font-family: "CalSans-SemiBold";
+    src: url("@/assets/fonts/CalSans-SemiBold.ttf") format("ttf"); /* Đường dẫn tới font */
+  }
+  @font-face {
+    font-family: "DM";
+    src: url("@/assets/fonts/DMSans-Regular.ttf") format("ttf"); /* Đường dẫn tới font */
+  }
+  @font-face {
+    font-family: "Roboto";
+    src: url("@/assets/fonts/Roboto-Regular.ttf") format("ttf"); /* Đường dẫn tới font */
+  }
+  a {
+    text-decoration: none;
+    color: black;
+  }
 }

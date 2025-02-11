@@ -40,41 +40,45 @@
     </div>
     <div class="nav-icons">
       <template v-if="!isLoggedIn">
-        <!-- Hiển thị nút Login / Signup nếu chưa đăng nhập -->
-        <button @click="goToLogin" class="btn-login">Login / Signup</button>
+        <!-- Nếu chưa đăng nhập: Hiển thị nút Đăng ký / Đăng nhập -->
+        <button @click="goToLogin" class="btn-login">
+          Đăng ký / Đăng nhập
+        </button>
       </template>
       <template v-else>
-        <!-- Hiển thị icon User nếu đã đăng nhập -->
-        <router-link to="/user" class="user-link">
-          <font-awesome-icon :icon="['fas', 'user']" class="user-icon" />
-        </router-link>
+        <!-- Nếu đã đăng nhập: Hiển thị nút Go to Account -->
+        <router-link to="/account" class="btn-login">Go to Account</router-link>
       </template>
     </div>
   </div>
 </template>
 
 <script>
+import { useAuthStore } from "../stores/auth";
+
 export default {
+  name: "Navbar",
   data() {
     return {
       activeLink: "home",
-      isLoggedIn: false, // Trạng thái đăng nhập
     };
+  },
+  computed: {
+    // Lấy trạng thái đăng nhập từ store Pinia
+    authStore() {
+      return useAuthStore();
+    },
+    isLoggedIn() {
+      return this.authStore.isAuthenticated;
+    },
   },
   methods: {
     setActiveLink(link) {
       this.activeLink = link;
     },
     goToLogin() {
-      this.$router.push("/login"); // Chuyển đến trang login
+      this.$router.push("/login");
     },
-    checkLoginStatus() {
-      // Giả sử bạn lưu token trong localStorage hoặc Vuex
-      this.isLoggedIn = localStorage.getItem("userToken") ? true : false;
-    },
-  },
-  mounted() {
-    this.checkLoginStatus();
   },
 };
 </script>
@@ -85,6 +89,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
+  background-color: transparent;
+  position: relative;
+  z-index: 999;
 }
 
 .logo img {
@@ -146,7 +153,7 @@ export default {
   width: 150px;
 }
 
-/* Nút Login / Signup */
+/* Nút Đăng ký / Đăng nhập */
 .btn-login {
   padding: 5px 10px;
   background-color: #007bff;
@@ -162,7 +169,6 @@ export default {
   background-color: #0056b3;
 }
 
-/* Biểu tượng user */
 .user-link {
   text-decoration: none;
 }
