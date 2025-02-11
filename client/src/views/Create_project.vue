@@ -289,7 +289,7 @@ export default {
         marketingPlan: "",
         commitment: false,
         termsAccepted: false,
-        images: [],
+        images: [], // Mảng ảnh
       },
       message: "",
     };
@@ -313,6 +313,33 @@ export default {
       } catch (error) {
         console.error("Lỗi khi gửi dự án:", error);
         this.message = "Có lỗi xảy ra, vui lòng thử lại!";
+      }
+    },
+
+    // Hàm upload file
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        console.log("Uploaded file:", file);
+      } else {
+        console.warn("Không có file nào được tải lên!");
+      }
+    },
+
+    // Hàm upload ảnh
+    handleImageUpload(event) {
+      const files = event.target.files;
+      if (files.length > 0) {
+        this.project.images = []; // Xóa các ảnh cũ nếu có
+        Array.from(files).forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.project.images.push(e.target.result); // Đưa ảnh vào mảng images
+          };
+          reader.readAsDataURL(file); // Đọc file ảnh dưới dạng URL
+        });
+      } else {
+        console.warn("Không có ảnh nào được chọn!");
       }
     },
   },

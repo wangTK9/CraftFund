@@ -4,7 +4,7 @@
     <h1 class="container_marker-header">This is market</h1>
     <nav>
       <ul class="nav-menu">
-        <li><a href="#" @click="shoclsCategory('electronics')"> All</a></li>
+        <li><a href="#" @click="showCategory('electronics')">All</a></li>
         <li><a href="#" @click="showCategory('fashion')">Truyền Thống</a></li>
         <li><a href="#" @click="showCategory('home')">Hiện đại</a></li>
         <li><a href="#" @click="showCategory('fashion')">Truyền Thống</a></li>
@@ -38,12 +38,14 @@
           </div>
         </div>
         <div class="card-content">
-          <span class="author"
-            ><span class="author_id">By</span>{{ project.ownerName }}</span
-          >
+          <!-- Kiểm tra trước khi hiển thị ownerName -->
+          <span class="author">
+            <span class="author_id">By</span>
+            {{ project.ownerName || "N/A" }}
+          </span>
           <div class="info">
-            <h3 class="card-title">{{ project.name }}</h3>
-            <p class="card-price">Số tiền: ${{ project.price }}</p>
+            <h3 class="card-title">{{ project.productType }}</h3>
+            <p class="card-price">Số tiền: ${{ project.estimatedPrice }}</p>
           </div>
         </div>
       </div>
@@ -76,11 +78,22 @@ const loadProject = async (walletAddress) => {
     const response = await fetch(
       `http://localhost:5000/projects/${walletAddress}`
     );
+
+    // Kiểm tra mã trạng thái của phản hồi
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const data = await response.json();
 
-    project.value = data;
-    mainImage.value = data.images[0]; // Lấy ảnh đầu tiên làm ảnh chính
-    smallImages.value = data.images.slice(1); // Các ảnh còn lại là ảnh nhỏ
+    // Kiểm tra xem dữ liệu có đúng cấu trúc không
+    if (data && data.ownerName && data.images) {
+      project.value = data;
+      mainImage.value = data.images[0]; // Lấy ảnh đầu tiên làm ảnh chính
+      smallImages.value = data.images.slice(1); // Các ảnh còn lại là ảnh nhỏ
+    } else {
+      throw new Error("Dữ liệu không hợp lệ");
+    }
   } catch (error) {
     console.error("Error loading project:", error);
   }
