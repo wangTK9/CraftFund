@@ -4,6 +4,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");  // Import body-parser
 const projectRoutes = require("./routes/projectRoutes");
+const userRoutes = require("./routes/userRouter");
 
 // Tùy chọn 1: Tắt strictQuery (mặc định trong tương lai)
 mongoose.set('strictQuery', false);
