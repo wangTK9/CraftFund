@@ -2,6 +2,17 @@ const express = require("express");
 const router = express.Router();
 const Project = require("../models/project");
 
+// API lấy tất cả dự án
+router.get("/projects", async (req, res) => {
+  try {
+    const projects = await Project.find(); // Lấy tất cả dự án từ MongoDB
+    res.json(projects);
+  } catch (error) {
+    console.error("Lỗi lấy danh sách dự án:", error);
+    res.status(500).json({ error: "Lỗi server" });
+  }
+});
+
 router.post("/", async (req, res) => {
   console.log("Received POST request to create project");
 
