@@ -71,8 +71,16 @@ export default defineComponent({
         await window.leap.enable(arabicaParams.chainId);
         const accounts = await window.leap.getKey(arabicaParams.chainId);
 
-        authStore.login(accounts.bech32Address);
-        alert(`Connected: ${accounts.bech32Address}`);
+        if (!accounts || !accounts.bech32Address) {
+          alert("Failed to retrieve wallet address");
+          return;
+        }
+
+        const walletAddress = accounts.bech32Address;
+        console.log("📌 Wallet Address Retrieved:", walletAddress); // Log địa chỉ ví
+
+        authStore.login(walletAddress);
+        alert(`Connected: ${walletAddress}`);
 
         // Gửi địa chỉ ví lên backend
         const response = await fetch(
@@ -80,22 +88,22 @@ export default defineComponent({
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ walletAddress: accounts.bech32Address }),
+            body: JSON.stringify({ walletAddress }),
           }
         );
 
         const result = await response.json();
         if (response.ok) {
-          console.log("User registered:", result);
+          console.log("✅ User registered:", result);
         } else {
-          console.error("Registration failed:", result);
+          console.error("❌ Registration failed:", result);
           alert(result.message || "Failed to register");
         }
 
         // Chuyển hướng sang trang Home
         router.push("/");
       } catch (error) {
-        console.error("Failed to connect wallet:", error);
+        console.error("❌ Failed to connect wallet:", error);
         alert("Failed to connect wallet");
       }
     };

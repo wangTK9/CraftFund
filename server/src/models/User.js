@@ -6,8 +6,6 @@ const userSchema = new mongoose.Schema(
     role: { type: String, default: "investor" },
     email: { type: String, default: "" },
     fullName: { type: String, default: "" },
-    investmentInterests: { type: String, default: "" },
-    investmentAmount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

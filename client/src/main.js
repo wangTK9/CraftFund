@@ -11,6 +11,7 @@ import Support from "./views/Support.vue";
 import Account from "./views/Account.vue";
 import Create_project from "./views/Create_project.vue";
 import Login from "./views/Login.vue";
+import Founder from "./views/Founder_register.vue";
 
 // Import FontAwesome icon và FontAwesome Vue component
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -42,6 +43,7 @@ const router = createRouter({
     { path: "/account", component: Account },
     { path: "/create_project", component: Create_project },
     { path: "/login", component: Login },
+    { path: "/founder", component: Founder },
   ],
 });
 

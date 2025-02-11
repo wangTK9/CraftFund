@@ -2,28 +2,26 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const bodyParser = require("body-parser");  // Import body-parser
+const bodyParser = require("body-parser");
+
 const projectRoutes = require("./routes/projectRoutes");
-const userRoutes = require("./routes/userRouter");
+const userRoutes = require("./routes/userRoutes");
 
-// Tùy chọn 1: Tắt strictQuery (mặc định trong tương lai)
-mongoose.set('strictQuery', false);
-
+mongoose.set("strictQuery", false);
 dotenv.config();
 const app = express();
 
-// Cấu hình CORS chỉ cho phép frontend từ localhost:5173
+// Cấu hình CORS
 const corsOptions = {
-  origin: "http://localhost:5173", // Cổng frontend đang chạy
-  methods: "GET,POST", // Các phương thức HTTP được phép
-  allowedHeaders: "Content-Type", // Các header được phép
+  origin: "http://localhost:5173",
+  methods: "GET,POST",
+  allowedHeaders: "Content-Type",
 };
+app.use(cors(corsOptions));
 
-app.use(cors(corsOptions)); // Sử dụng cấu hình CORS này trong Express
-
-// Thêm cấu hình body-parser để tăng giới hạn dung lượng
-app.use(bodyParser.json({ limit: '10mb' }));  // Tăng giới hạn lên 10MB
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));  // Tăng giới hạn cho form data
+// Middleware xử lý dữ liệu JSON
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 // Kết nối MongoDB Atlas
 mongoose
